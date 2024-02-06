@@ -6,7 +6,7 @@
 }
 
 body {
-  background-image: url("https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fwww.xtrafondos.com%2Fwallpapers%2Fmarcha-imperial-star-wars-4496.jpg&f=1&nofb=1&ipt=9a0a71a639988f4f03b18f09abcc4fd85801faa23d635ff99d969191dafbc4ff&ipo=images");
+  background-image: url("background.jpg");
   background-repeat: no-repeat;
   background-size: cover;
   font-family: "Noto Sans", sans-serif;
@@ -76,6 +76,18 @@ section {
   text-shadow: 2px 2px 4px black;
 }
 
+@keyframes pulse {
+  0% {
+    transform: scaleX(1) translateX(0%);
+  }
+  50% {
+    transform: scaleX(1.5) translateX(20%);
+  }
+  100% {
+    transform: scaleX(1) translateX(0%);
+  }
+}
+
 .personDetails {
   color: white;
   padding: 0.5rem 0rem 0.5rem 1rem;
@@ -112,17 +124,10 @@ button {
   margin-top: 5rem;
 }
 
-#loaderRightDiv {
-  height: 15vh;
-  width: 25vh;
-  margin: 0 auto;
-}
-
 .loader {
   width: 80px;
   height: 40px;
-  color: white;
-  font-weight: bold;
+  color: darkred;
   border: 2px solid currentColor;
   border-right-color: transparent;
   padding: 3px;
@@ -141,6 +146,11 @@ button {
     linear-gradient(#0000 calc(50% - 5px), currentColor 0 calc(50% + 5px), #0000 0) right/2px 100%;
   background-repeat: no-repeat;
 }
+@keyframes l5 {
+  100% {
+    background-size: 120%;
+  }
+}
 
 footer {
   display: none;
@@ -154,19 +164,7 @@ footer {
   align-items: center;
 }
 
-@keyframes pulse {
-  0% {
-    transform: scaleX(1) translateX(0%);
-  }
-  50% {
-    transform: scaleX(1.5) translateX(20%);
-  }
-  100% {
-    transform: scaleX(1) translateX(0%);
-  }
-}
-
-@media only screen and (max-width: 1260px) {
+@media only screen and (max-width: 1430px) {
   body {
     background-size: auto;
   }

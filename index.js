@@ -1,14 +1,15 @@
 const peopleInStarWars = []
+let loader = document.getElementById('loaderDiv')
 
 const allStarwars = async () => {
   try {
-    showLoader()
+    showLoader(loader)
     const response = await fetch('https://swapi.dev/api/people/')
     return await response.json()
   } catch (err) {
     console.log(err)
   } finally {
-    hideLoader()
+    hideLoader(loader)
   }
 }
 
@@ -146,7 +147,7 @@ function getPersonData (clickedPerson) {
 
     const getSpeciesPromise = async speciesId => {
       try {
-        showLoaderRigthPanel()
+        showLoaderRigthPanel(loader)
         const response = await fetch(
           `https://swapi.dev/api/species/${speciesId}`
         )
@@ -157,7 +158,7 @@ function getPersonData (clickedPerson) {
       } catch (err) {
         console.log(err)
       } finally {
-        hideLoaderRightPanel()
+        hideLoaderRightPanel(loader)
       }
     }
   } else localStorage.setItem('name', 'n/a')
@@ -175,13 +176,13 @@ function getPlanetData (clickedPerson) {
 
   const getHomePlanetPromise = async planetId => {
     try {
-      showLoaderRigthPanel()
+      showLoaderRigthPanel(loader)
       const response = await fetch(`https://swapi.dev/api/planets/${planetId}`)
       return await response.json()
     } catch (err) {
       console.log(err)
     } finally {
-      hideLoaderRightPanel()
+      hideLoaderRightPanel(loader)
     }
   }
 
@@ -245,29 +246,24 @@ function getDetails (e) {
 }
 
 //----------------------- loader -----------------------
-function showLoader () {
-  document.getElementById('loaderDiv').classList.add('loader')
+
+function showLoader (loader) {
+  loader.classList.add('loader')
   document.getElementById('main').style.opacity = 0
 }
-function hideLoader () {
-  document.getElementById('loaderDiv').classList.remove('loader')
-  document.getElementById('loaderDiv').style.display = 'none'
+
+function showLoaderRigthPanel (loader) {
+  loader.display = 'block'
+  loader.classList.add('loader')
+}
+
+function hideLoader (loader) {
+  loader.classList.remove('loader')
+  loader.style.display = 'none'
   document.getElementById('main').style.opacity = 1
 }
 
-function showLoaderRigthPanel () {
-  let loaderDiv = document.getElementById('loaderDivRight')
-  if (loaderDiv !== null) {
-    let loaderdiv = document.createElement('div')
-    document.getElementById('detailSection').appendChild(loaderdiv)
-    loaderdiv.classList.add('loader')
-    loaderdiv.setAttribute('id', 'loaderRightDiv')
-  }
-}
-function hideLoaderRightPanel () {
-  let loaderDiv = document.getElementById('loaderDivRight')
-  if (loaderDiv !== null) {
-    let child = document.getElementById('loaderRightDiv')
-    child.parentNode.removeChild(child)
-  }
+function hideLoaderRightPanel (loader) {
+  loader.classList.remove('loader')
+  loader.style.display = 'none'
 }
