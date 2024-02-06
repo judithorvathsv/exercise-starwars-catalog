@@ -1,5 +1,6 @@
 const peopleInStarWars = []
 let loader = document.getElementById('loaderDiv')
+let specieNameString = ''
 
 const allStarwars = async () => {
   try {
@@ -78,43 +79,47 @@ let buttonString = function addButtons () {
 document.getElementById('buttonDiv').innerHTML = buttonString()
 
 //----------------------- select button click -----------------------
-document.getElementById('buttonDiv').addEventListener('click', function (e) {
-  let searchedName = ''
-  let index = -1
-  let allP = document.querySelectorAll('p')
-  let pArray = [...allP]
-  let allPWithCharacter = pArray.filter(function (item) {
-    return item.classList.contains('personItem')
-  })
-  let numberOfCharacters = allPWithCharacter.length
+document
+  .getElementById('buttonDiv')
+  .addEventListener('click', async function (e) {
+    //get clicked item and add classList
+    let searchedName = ''
+    let index = -1
+    let allP = document.querySelectorAll('p')
+    let pArray = [...allP]
+    let allPWithCharacter = pArray.filter(function (item) {
+      return item.classList.contains('personItem')
+    })
+    let numberOfCharacters = allPWithCharacter.length
 
-  for (let i = 0; i < numberOfCharacters; i++) {
-    if (allPWithCharacter[i].classList.contains('selectedCharacter')) {
-      allPWithCharacter[i].classList.remove('selectedCharacter')
-      if (e.target.innerText == 'chevron_left' && i > 0) {
-        allPWithCharacter[i - 1].classList.add('selectedCharacter')
-        searchedName = allPWithCharacter[i - 1].innerText
-        index = i - 1
-      } else if (
-        e.target.innerText == 'chevron_right' &&
-        i < allPWithCharacter.length - 1
-      ) {
-        allPWithCharacter[i + 1].classList.add('selectedCharacter')
-        searchedName = allPWithCharacter[i + 1].innerText
-        index = i + 1
-        break
+    for (let i = 0; i < numberOfCharacters; i++) {
+      if (allPWithCharacter[i].classList.contains('selectedCharacter')) {
+        allPWithCharacter[i].classList.remove('selectedCharacter')
+        if (e.target.innerText == 'chevron_left' && i > 0) {
+          allPWithCharacter[i - 1].classList.add('selectedCharacter')
+          searchedName = allPWithCharacter[i - 1].innerText
+          index = i - 1
+        } else if (
+          e.target.innerText == 'chevron_right' &&
+          i < allPWithCharacter.length - 1
+        ) {
+          allPWithCharacter[i + 1].classList.add('selectedCharacter')
+          searchedName = allPWithCharacter[i + 1].innerText
+          index = i + 1
+          break
+        }
       }
     }
-  }
-  if (searchedName !== null && searchedName.length > 0) {
-    let clickedPerson = peopleInStarWars.find(p => p.name == searchedName)
-    let personAsString = getDetailsInformation(clickedPerson)
-    document.getElementById('detailSection').innerHTML = personAsString
-    document.getElementById('countCharacter').innerText = `${
-      index + 1
-    } / ${numberOfCharacters}`
-  }
-})
+    //get details and show all information in div
+    if (searchedName !== null && searchedName.length > 0) {
+      let clickedPerson = peopleInStarWars.find(p => p.name == searchedName)
+      let personAsString = await getDetailsInformation(clickedPerson)
+      document.getElementById('detailSection').innerHTML = personAsString
+      document.getElementById('countCharacter').innerText = `${
+        index + 1
+      } / ${numberOfCharacters}`
+    }
+  })
 
 //----------------------- RIGHT PANEL -----------------------
 function nth_occurrence (string, char, nth) {
@@ -139,80 +144,57 @@ function nth_occurrence (string, char, nth) {
   }
 }
 
-//Get person information
-function getPersonData (clickedPerson) {
-  if (clickedPerson.species.length !== 0) {
-    const lastPerIndex = clickedPerson.species[0].lastIndexOf('/')
-    let speciesId = clickedPerson.species[0].charAt(lastPerIndex - 1)
-
-    const getSpeciesPromise = async speciesId => {
-      try {
-        showLoaderRigthPanel(loader)
-        const response = await fetch(
-          `https://swapi.dev/api/species/${speciesId}`
-        )
-        return await response.json()
-        getSpeciesPromise(speciesId).then(function (result) {
-          localStorage.setItem('name', result.name)
-        })
-      } catch (err) {
-        console.log(err)
-      } finally {
-        hideLoaderRightPanel(loader)
-      }
-    }
-  } else localStorage.setItem('name', 'n/a')
+//fetch species
+const getSpeciesPromise = async speciesId => {
+  try {
+    showLoaderRigthPanel(loader)
+    console.log('loading?')
+    const response = await fetch(`https://swapi.dev/api/species/${speciesId}`)
+    return await response.json()
+  } catch (err) {
+    console.log(err)
+  } finally {
+    hideLoaderRightPanel(loader)
+  }
 }
 
-//Get planet information
-function getPlanetData (clickedPerson) {
-  const almostLastIndex = nth_occurrence(clickedPerson.homeworld, '/', 5)
-  const lastPerIndex = nth_occurrence(clickedPerson.homeworld, '/', 6)
-
-  let planetId = clickedPerson.homeworld.substring(
-    almostLastIndex + 1,
-    lastPerIndex
-  )
-
-  const getHomePlanetPromise = async planetId => {
-    try {
-      showLoaderRigthPanel(loader)
-      const response = await fetch(`https://swapi.dev/api/planets/${planetId}`)
-      return await response.json()
-    } catch (err) {
-      console.log(err)
-    } finally {
-      hideLoaderRightPanel(loader)
-    }
+//fetch planets
+const getHomePlanetPromise = async planetId => {
+  try {
+    showLoaderRigthPanel(loader)
+    const response = await fetch(`https://swapi.dev/api/planets/${planetId}`)
+    return await response.json()
+  } catch (err) {
+    console.log(err)
+  } finally {
+    hideLoaderRightPanel(loader)
   }
-
-  getHomePlanetPromise(planetId).then(function (result) {
-    localStorage.setItem('planet', JSON.stringify(result))
-  })
 }
 
 //All information together -> make html
-function getDetailsInformation (clickedPerson) {
-  getPersonData(clickedPerson)
-  let specie = localStorage.getItem('name')
-
-  getPlanetData(clickedPerson)
-  let storedPlanet = localStorage.getItem('planet')
-
-  let planetItem = {
-    name: 'n/a',
-    rotation_period: 'n/a',
-    orbital_period: 'n/a',
-    diameter: 'n/a',
-    climate: 'n/a',
-    gravity: 'n/a',
-    terrain: 'n/a',
-    population: 'n/a'
+async function getDetailsInformation (clickedPerson) {
+  //specie
+  let specie = ''
+  if (
+    clickedPerson.species === undefined ||
+    clickedPerson.species.length == 0
+  ) {
+    specie = 'n/a'
+  } else {
+    const lastPerIndex = clickedPerson.species[0].lastIndexOf('/')
+    let speciesId = clickedPerson.species[0].charAt(lastPerIndex - 1)
+    let specieObj = await getSpeciesPromise(speciesId)
+    specie = specieObj.name
   }
 
-  if (storedPlanet !== 'undefined' && storedPlanet !== null) {
-    planetItem = JSON.parse(storedPlanet)
-  }
+  //planet
+  const almostLastIndexPlanet = nth_occurrence(clickedPerson.homeworld, '/', 5)
+  const lastPerIndexPlanet = nth_occurrence(clickedPerson.homeworld, '/', 6)
+  let planetId = clickedPerson.homeworld.substring(
+    almostLastIndexPlanet + 1,
+    lastPerIndexPlanet
+  )
+  let planetItem = await getHomePlanetPromise(planetId)
 
   return `<div id='personDetailsDiv'>
   <h2>Details</h2>
@@ -239,9 +221,11 @@ function getDetailsInformation (clickedPerson) {
 }
 
 //show all information in div
-function getDetails (e) {
-  const clickedPerson = peopleInStarWars.find(p => p.name == e.target.innerText)
-  let personAsString = getDetailsInformation(clickedPerson)
+async function getDetails (e) {
+  const clickedPersonObj = peopleInStarWars.find(
+    p => p.name == e.target.innerText
+  )
+  let personAsString = await getDetailsInformation(clickedPersonObj)
   document.getElementById('detailSection').innerHTML = personAsString
 }
 
@@ -253,7 +237,9 @@ function showLoader (loader) {
 }
 
 function showLoaderRigthPanel (loader) {
-  loader.display = 'block'
+  document.getElementById(
+    'detailSection'
+  ).innerHTML = `<div id='loaderDiv' class='loader miniLoader'></div>`
   loader.classList.add('loader')
 }
 

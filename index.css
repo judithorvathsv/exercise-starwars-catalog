@@ -152,6 +152,12 @@ button {
   }
 }
 
+.miniLoader {
+  color: white;
+  height: 10% !important;
+  width: 15% !important;
+}
+
 footer {
   display: none;
 }
