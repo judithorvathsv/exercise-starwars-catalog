@@ -21,11 +21,14 @@ h1 {
   word-wrap: break-word;
 }
 
+#detailsTitle,
 h2 {
   color: darkred;
-  text-align: center;
-  margin-bottom: 0.5rem;
   text-shadow: 2px 2px 4px black;
+  text-align: center;
+  padding: 1rem;
+  margin-top: -1rem;
+  font-size: 2rem;
 }
 
 h3 {
@@ -33,6 +36,7 @@ h3 {
   margin-left: 1rem;
   text-shadow: 2px 2px 4px black;
   background-color: grey;
+  font-size: 1.5rem;
 }
 
 main {
@@ -59,6 +63,7 @@ section {
 .personItem {
   color: white;
   padding: 1rem;
+  cursor: pointer;
 }
 
 #beforeClickedPersonDiv {
@@ -68,6 +73,7 @@ section {
 .selectedCharacter {
   color: red;
   animation: pulse 3s infinite ease-in-out;
+  text-shadow: 2px 2px 4px black;
 }
 
 .personDetails {
@@ -87,8 +93,10 @@ section {
 button {
   background-color: darkred;
   border-radius: 5px;
+  border: 1px solid darkred;
   padding: 0.5rem 1 rem 0.5rem 1rem;
   display: flex;
+  cursor: pointer;
 }
 
 #countCharacter {
@@ -101,6 +109,12 @@ button {
   height: 15vh;
   width: 25vh;
   margin-top: 5rem;
+}
+
+#loaderRightDiv {
+  height: 15vh;
+  width: 25vh;
+  margin: 0 auto;
 }
 
 .loader {
@@ -126,10 +140,17 @@ button {
     linear-gradient(#0000 calc(50% - 5px), currentColor 0 calc(50% + 5px), #0000 0) right/2px 100%;
   background-repeat: no-repeat;
 }
-@keyframes l5 {
-  100% {
-    background-size: 120%;
-  }
+
+footer {
+  display: none;
+}
+
+#toTheTop {
+  color: black;
+  text-decoration: none;
+  font-size: 2.5rem;
+  display: flex;
+  align-items: center;
 }
 
 @keyframes pulse {
@@ -159,6 +180,8 @@ button {
 
   h1 {
     text-align: center;
+    margin: 0;
+    padding: 0;
     margin-top: 0.5rem;
   }
 
@@ -169,10 +192,20 @@ button {
   }
 
   #peopleSection {
-    margin-top: 1rem;
+    margin-top: 0.5rem;
   }
   #detailSection {
-    margin-top: 2rem;
+    margin-top: 1rem;
     width: 100%;
+  }
+  footer {
+    display: flex;
+    justify-content: center;
+    background-color: white;
+    opacity: 0.75;
+  }
+
+  #toTheTop {
+    display: inline-flex;
   }
 }

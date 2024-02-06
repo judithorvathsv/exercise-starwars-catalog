@@ -142,23 +142,20 @@ function getPersonData (clickedPerson) {
 
     const getSpeciesPromise = async speciesId => {
       try {
-        showLoader()
+        showLoaderRigthPanel()
         const response = await fetch(
           `https://swapi.dev/api/species/${speciesId}`
         )
         return await response.json()
+        getSpeciesPromise(speciesId).then(function (result) {
+          localStorage.setItem('name', result.name)
+        })
       } catch (err) {
         console.log(err)
       } finally {
-        hideLoader()
+        hideLoaderRightPanel()
       }
     }
-
-    getSpeciesPromise(speciesId).then(function (result) {
-      localStorage.setItem('name', result.name)
-    })
-
-    hideLoader()
   } else localStorage.setItem('name', 'n/a')
 }
 
@@ -174,13 +171,13 @@ function getPlanetData (clickedPerson) {
 
   const getHomePlanetPromise = async planetId => {
     try {
-      showLoader()
+      showLoaderRigthPanel()
       const response = await fetch(`https://swapi.dev/api/planets/${planetId}`)
       return await response.json()
     } catch (err) {
       console.log(err)
     } finally {
-      hideLoader()
+      hideLoaderRightPanel()
     }
   }
 
@@ -196,7 +193,21 @@ function getDetailsInformation (clickedPerson) {
 
   getPlanetData(clickedPerson)
   let storedPlanet = localStorage.getItem('planet')
-  let planetItem = JSON.parse(storedPlanet)
+
+  let planetItem = {
+    name: 'n/a',
+    rotation_period: 'n/a',
+    orbital_period: 'n/a',
+    diameter: 'n/a',
+    climate: 'n/a',
+    gravity: 'n/a',
+    terrain: 'n/a',
+    population: 'n/a'
+  }
+
+  if (storedPlanet !== 'undefined' && storedPlanet !== null) {
+    planetItem = JSON.parse(storedPlanet)
+  }
 
   return `<div id='personDetailsDiv'>
   <h2>Details</h2>
@@ -232,8 +243,31 @@ function getDetails (e) {
 //----------------------- loader -----------------------
 function showLoader () {
   document.getElementById('loaderDiv').classList.add('loader')
+  document.getElementById('main').style.opacity = 0
 }
 function hideLoader () {
   document.getElementById('loaderDiv').classList.remove('loader')
   document.getElementById('loaderDiv').style.display = 'none'
+  document.getElementById('main').style.opacity = 1
 }
+
+function showLoaderRigthPanel () {
+  let loaderDiv = document.getElementById('loaderDivRight')
+  if (loaderDiv !== null) {
+    let loaderdiv = document.createElement('div')
+    document.getElementById('detailSection').appendChild(loaderdiv)
+    loaderdiv.classList.add('loader')
+    loaderdiv.setAttribute('id', 'loaderRightDiv')
+  }
+}
+function hideLoaderRightPanel () {
+  let loaderDiv = document.getElementById('loaderDivRight')
+  if (loaderDiv !== null) {
+    let child = document.getElementById('loaderRightDiv')
+    child.parentNode.removeChild(child)
+  }
+}
+
+
+
+
