@@ -31,6 +31,10 @@ allStarwars()
       p.innerText = person.name
       p.classList.add('personItem')
 
+      document.getElementById('countCharacter').innerText = `${
+        selectedItemIndex + 1
+      } / ${numberOfCharacters}`
+
       document.getElementById('peopleUl').appendChild(p)
       p.addEventListener('click', function (e) {
         let allP = document.querySelectorAll('p')
@@ -267,7 +271,3 @@ function hideLoaderRightPanel () {
     child.parentNode.removeChild(child)
   }
 }
-
-
-
-
