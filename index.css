@@ -55,7 +55,7 @@ section {
   background-color: black;
   opacity: 0.75;
   position: relative;
-  transform: translate(0%, 15%);
+  transform: translate(0%, 25%);
   min-height: fit-content;
   padding-top: 1rem;
 }
