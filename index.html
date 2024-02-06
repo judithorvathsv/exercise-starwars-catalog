@@ -1,12 +1,33 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Star Wars Catalog</title>
-    <link rel="stylesheet" href="index.css" />
-  </head>
-  <body>
-    <script src="" type="module"></script>
-  </body>
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Star Wars Catalog</title>
+  <link rel="stylesheet" href="index.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+</head>
+
+<body>
+  <header>
+    <h1>STAR WARS CATALOG</h1>
+    <div id="loaderDiv" class="loader"></div>
+  </header>
+  <main>
+    <section id="peopleSection">
+      <ul id="peopleUl"></ul>
+      <div id=buttonDiv></div>
+    </section>
+    <section id="detailSection">
+      <h2 id="beforeClickedPersonDiv">Choose a character on the left side</h2>
+    </section>
+  </main>
+
+  <script src="index.js" type="module"></script>
+</body>
+
 </html>

@@ -1,0 +1,178 @@
+* {
+  margin: 0px;
+  padding: 0px;
+  box-sizing: border-box;
+  font-family: "Roboto", sans-serif;
+}
+
+body {
+  background-image: url("https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fwww.xtrafondos.com%2Fwallpapers%2Fmarcha-imperial-star-wars-4496.jpg&f=1&nofb=1&ipt=9a0a71a639988f4f03b18f09abcc4fd85801faa23d635ff99d969191dafbc4ff&ipo=images");
+  background-repeat: no-repeat;
+  background-size: cover;
+  font-family: "Noto Sans", sans-serif;
+}
+
+h1 {
+  color: darkred;
+  font-size: 3rem;
+  text-shadow: 2px 2px 4px black;
+  margin-left: 2rem;
+  margin-top: 1.5rem;
+  word-wrap: break-word;
+}
+
+h2 {
+  color: darkred;
+  text-align: center;
+  margin-bottom: 0.5rem;
+  text-shadow: 2px 2px 4px black;
+}
+
+h3 {
+  color: darkred;
+  margin-left: 1rem;
+  text-shadow: 2px 2px 4px black;
+  background-color: grey;
+}
+
+main {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  margin: 0 2rem 0 2rem;
+}
+
+section {
+  display: flex;
+  flex-direction: column;
+  min-width: 40%;
+  max-width: 50%;
+  background-color: black;
+  opacity: 0.75;
+  position: relative;
+  transform: translate(0%, 15%);
+  min-height: fit-content;
+  padding-top: 1rem;
+}
+
+.personItem {
+  color: white;
+  padding: 1rem;
+}
+
+#beforeClickedPersonDiv {
+  color: darkred;
+}
+
+.selectedCharacter {
+  color: red;
+  animation: pulse 3s infinite ease-in-out;
+}
+
+.personDetails {
+  color: white;
+  padding: 0.5rem 0rem 0.5rem 1rem;
+}
+
+#planetDetailsDiv {
+  margin-top: 1rem;
+}
+
+#buttonDiv {
+  display: flex;
+  justify-content: center;
+}
+
+button {
+  background-color: darkred;
+  border-radius: 5px;
+  padding: 0.5rem 1 rem 0.5rem 1rem;
+  display: flex;
+}
+
+#countCharacter {
+  color: white;
+  margin: 5px;
+}
+
+#loaderDiv {
+  margin: 0 auto;
+  height: 15vh;
+  width: 25vh;
+  margin-top: 5rem;
+}
+
+.loader {
+  width: 80px;
+  height: 40px;
+  color: white;
+  font-weight: bold;
+  border: 2px solid currentColor;
+  border-right-color: transparent;
+  padding: 3px;
+  background: repeating-linear-gradient(90deg, currentColor 0 10px, #0000 0 15px) 0/0% no-repeat content-box content-box;
+  position: relative;
+  animation: l5 2s infinite steps(6);
+}
+.loader::before {
+  content: "";
+  position: absolute;
+  top: -2px;
+  bottom: -2px;
+  left: 100%;
+  width: 10px;
+  background: linear-gradient(#0000 calc(50% - 7px), currentColor 0 calc(50% - 5px), #0000 0 calc(50% + 5px), currentColor 0 calc(50% + 7px), #0000 0) left / 100% 100%, linear-gradient(currentColor calc(50% - 5px), #0000 0 calc(50% + 5px), currentColor 0) left / 2px 100%,
+    linear-gradient(#0000 calc(50% - 5px), currentColor 0 calc(50% + 5px), #0000 0) right/2px 100%;
+  background-repeat: no-repeat;
+}
+@keyframes l5 {
+  100% {
+    background-size: 120%;
+  }
+}
+
+@keyframes pulse {
+  0% {
+    transform: scaleX(1) translateX(0%);
+  }
+  50% {
+    transform: scaleX(1.5) translateX(20%);
+  }
+  100% {
+    transform: scaleX(1) translateX(0%);
+  }
+}
+
+@media only screen and (max-width: 1260px) {
+  body {
+    background-size: auto;
+  }
+}
+
+@media only screen and (max-width: 480px) {
+  main {
+    flex-direction: column;
+    margin: 0;
+    padding: 0;
+  }
+
+  h1 {
+    text-align: center;
+    margin-top: 0.5rem;
+  }
+
+  section {
+    max-height: 80%;
+    min-width: 100%;
+    transform: translate(0%, 0%);
+  }
+
+  #peopleSection {
+    margin-top: 1rem;
+  }
+  #detailSection {
+    margin-top: 2rem;
+    width: 100%;
+  }
+}
