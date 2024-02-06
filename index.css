@@ -60,6 +60,10 @@ section {
   padding-top: 1rem;
 }
 
+#peopleSection {
+  padding-bottom: 1.5rem;
+}
+
 .personItem {
   color: white;
   padding: 1rem;
