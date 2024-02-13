@@ -85,7 +85,6 @@ const getPeople = async () => {
   }
 }
 
-
 //show character's list
 let removeCharactersFromPreviousPage = () => {
   document.getElementById('peopleUl').innerHTML = ''
@@ -246,11 +245,13 @@ async function getDetailsInformation (clickedPerson) {
 
 //show all information in div
 async function getDetails (e) {
-  const clickedPersonObj = peopleInStarWars.find(
-    p => p.name == e.target.innerText
-  )
-  let personAsString = await getDetailsInformation(clickedPersonObj)
-  document.getElementById('detailSection').innerHTML = personAsString
+  for (let i = 0; i < peopleInStarWars.length; i++) {
+    if (peopleInStarWars[i].name === e.target.innerText) {
+      let personAsString = await getDetailsInformation(peopleInStarWars[i])
+      document.getElementById('detailSection').innerHTML = personAsString
+      break
+    }
+  }
 }
 
 //----------------------- loader -----------------------
