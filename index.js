@@ -1,12 +1,64 @@
-const peopleInStarWars = []
+let peopleInStarWars = []
 let loader = document.getElementById('loaderDiv')
-let specieNameString = ''
+let page = 1
 
-const allStarwars = async () => {
+//----------------------- LEFT PANEL -----------------------
+
+//add 'Characters' title
+let h2 = document.createElement('h2')
+document.getElementById('peopleUl').appendChild(h2)
+h2.innerText = 'Characters'
+h2.classList.add('characterTitle')
+
+//set navigation buttons at the bottom of the page
+let buttonString = function addButtons () {
+  return `
+  <div id = buttonDiv>
+  <button id='previousButton'>
+    <span class="material-symbols-outlined">chevron_left</span>
+  </button>
+  <span id='countCharacter'>  </span>
+    <button id='nextButton'>
+      <span class="material-symbols-outlined">chevron_right</span>
+    </button>
+</div>`
+}
+
+document.getElementById('buttonDiv').innerHTML = buttonString()
+
+//show navigation buttons at the bottom of the page
+function showPagingNumber () {
+  document.getElementById('countCharacter').innerText = `${page} / 9`
+}
+showPagingNumber()
+
+//get all characters from api
+const getPeople = async () => {
   try {
     showLoader(loader)
-    const response = await fetch('https://swapi.dev/api/people/')
-    return await response.json()
+    const url = 'https://swapi.py4e.com/api/people/'
+    const res = await fetch(url)
+
+    const { count, results } = await res.json()
+    if (count === 0) return []
+    const pageLength = results.length
+    const pages = [
+      results, // first page
+      ...(await Promise.all(
+        [
+          // -1 because first page already fetched
+          ...new Array(Math.ceil(count / pageLength) - 1).keys()
+        ].map(async n => {
+          // +1 because zero-indexed
+          // +1 because first page already fetched
+          const page = n + 2
+          const res = await fetch(`${url}?page=${page}`)
+          return (await res.json()).results
+        })
+      ))
+    ]
+
+    return pages.flat()
   } catch (err) {
     console.log(err)
   } finally {
@@ -14,29 +66,28 @@ const allStarwars = async () => {
   }
 }
 
-//----------------------- LEFT PANEL -----------------------
-let h2 = document.createElement('h2')
-document.getElementById('peopleUl').appendChild(h2)
-h2.innerText = 'Characters'
-h2.classList.add('characterTitle')
+peopleInStarWars = await getPeople()
 
-let selectedItemIndex = -1
-let numberOfCharacters = 0
+//show character's list
+let removeCharactersFromPreviousPage = () => {
+  document.getElementById('peopleUl').innerHTML = ''
 
-allStarwars()
-  .then(data => {
-    data.results.map(function (person) {
-      numberOfCharacters++
+  let h2 = document.createElement('h2')
+  document.getElementById('peopleUl').appendChild(h2)
+  h2.innerText = 'Characters'
+  h2.classList.add('characterTitle')
+}
 
-      peopleInStarWars.push(person)
+let showCharactersForOnePage = page => {
+  let firstCharacterOnPage = page * 10 - 10
+  let lastCharacterOnPage = page * 10
+  removeCharactersFromPreviousPage()
+  peopleInStarWars
+    .slice(firstCharacterOnPage, lastCharacterOnPage)
+    .map(function (person) {
       let p = document.createElement('p')
       p.innerText = person.name
       p.classList.add('personItem')
-
-      document.getElementById('countCharacter').innerText = `${
-        selectedItemIndex + 1
-      } / ${numberOfCharacters}`
-
       document.getElementById('peopleUl').appendChild(p)
       p.addEventListener('click', function (e) {
         let allP = document.querySelectorAll('p')
@@ -47,78 +98,29 @@ allStarwars()
 
         getDetails(e)
         e.target.classList.add('selectedCharacter')
-        selectedItemIndex = peopleInStarWars.findIndex(
-          i => i.name === e.target.innerText
-        )
-
-        document.getElementById('countCharacter').innerText = `${
-          selectedItemIndex + 1
-        } / ${numberOfCharacters}`
       })
     })
-  })
-  .catch(err => console.log(err))
-
-let buttonString = function addButtons () {
-  return `
-  <div id = buttonDiv>
-  <button id='previousButton'>
-    <span class="material-symbols-outlined">
-      chevron_left
-    </span>
-  </button>
-  <span id='countCharacter'>  </span>
-    <button id='nextButton'>
-      <span class="material-symbols-outlined">
-        chevron_right
-      </span>
-    </button>
-</div>`
 }
 
-document.getElementById('buttonDiv').innerHTML = buttonString()
+showCharactersForOnePage(page)
 
-//----------------------- select button click -----------------------
+//-----------------------  paging button click -----------------------
 document
   .getElementById('buttonDiv')
   .addEventListener('click', async function (e) {
-    //get clicked item and add classList
-    let searchedName = ''
-    let index = -1
-    let allP = document.querySelectorAll('p')
-    let pArray = [...allP]
-    let allPWithCharacter = pArray.filter(function (item) {
-      return item.classList.contains('personItem')
-    })
-    let numberOfCharacters = allPWithCharacter.length
+    let clickedButton = e.target
+    let parent = clickedButton.parentElement
 
-    for (let i = 0; i < numberOfCharacters; i++) {
-      if (allPWithCharacter[i].classList.contains('selectedCharacter')) {
-        allPWithCharacter[i].classList.remove('selectedCharacter')
-        if (e.target.innerText == 'chevron_left' && i > 0) {
-          allPWithCharacter[i - 1].classList.add('selectedCharacter')
-          searchedName = allPWithCharacter[i - 1].innerText
-          index = i - 1
-        } else if (
-          e.target.innerText == 'chevron_right' &&
-          i < allPWithCharacter.length - 1
-        ) {
-          allPWithCharacter[i + 1].classList.add('selectedCharacter')
-          searchedName = allPWithCharacter[i + 1].innerText
-          index = i + 1
-          break
-        }
-      }
+    if (parent.id == 'previousButton' && page > 1) {
+      page--
     }
-    //get details and show all information in div
-    if (searchedName !== null && searchedName.length > 0) {
-      let clickedPerson = peopleInStarWars.find(p => p.name == searchedName)
-      let personAsString = await getDetailsInformation(clickedPerson)
-      document.getElementById('detailSection').innerHTML = personAsString
-      document.getElementById('countCharacter').innerText = `${
-        index + 1
-      } / ${numberOfCharacters}`
+    if (parent.id == 'nextButton' && page < 9) {
+      page++
     }
+    document.getElementById('countCharacter').innerText = `${page} / 9`
+
+    //get characters for that page number
+    showCharactersForOnePage(page)
   })
 
 //----------------------- RIGHT PANEL -----------------------
@@ -230,7 +232,6 @@ async function getDetails (e) {
 }
 
 //----------------------- loader -----------------------
-
 function showLoader (loader) {
   loader.classList.add('loader')
   document.getElementById('main').style.opacity = 0
