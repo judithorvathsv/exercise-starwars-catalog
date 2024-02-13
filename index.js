@@ -2,6 +2,18 @@ let peopleInStarWars = []
 let loader = document.getElementById('loaderDiv')
 let page = 1
 
+//store characters in localStorage
+window.onload = () => {
+  let storedCharacters = localStorage.getItem('storedPeopleInStarWars')
+  if (storedCharacters == 'undefined' || storedCharacters == null) {
+    getPeople()
+  } else {
+    peopleInStarWars = JSON.parse(
+      localStorage.getItem('storedPeopleInStarWars')
+    )
+  }
+}
+
 //----------------------- LEFT PANEL -----------------------
 
 //add 'Characters' title
@@ -58,7 +70,14 @@ const getPeople = async () => {
       ))
     ]
 
-    return pages.flat()
+    let resultFromFetch = pages.flat()
+    peopleInStarWars = resultFromFetch
+    localStorage.setItem(
+      'storedPeopleInStarWars',
+      JSON.stringify(peopleInStarWars)
+    )
+
+    return resultFromFetch
   } catch (err) {
     console.log(err)
   } finally {
@@ -66,7 +85,6 @@ const getPeople = async () => {
   }
 }
 
-peopleInStarWars = await getPeople()
 
 //show character's list
 let removeCharactersFromPreviousPage = () => {
@@ -78,10 +96,15 @@ let removeCharactersFromPreviousPage = () => {
   h2.classList.add('characterTitle')
 }
 
-let showCharactersForOnePage = page => {
+let showCharactersForOnePage = async page => {
   let firstCharacterOnPage = page * 10 - 10
   let lastCharacterOnPage = page * 10
   removeCharactersFromPreviousPage()
+
+  if (peopleInStarWars.length == 0) {
+    peopleInStarWars = await getPeople()
+  }
+
   peopleInStarWars
     .slice(firstCharacterOnPage, lastCharacterOnPage)
     .map(function (person) {
@@ -150,7 +173,6 @@ function nth_occurrence (string, char, nth) {
 const getSpeciesPromise = async speciesId => {
   try {
     showLoaderRigthPanel(loader)
-    console.log('loading?')
     const response = await fetch(`https://swapi.dev/api/species/${speciesId}`)
     return await response.json()
   } catch (err) {
